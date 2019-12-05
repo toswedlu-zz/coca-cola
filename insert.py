@@ -2,6 +2,7 @@ import datetime
 import sys
 import time
 from pymongo import MongoClient
+from pymongo.errors import BulkWriteError
 
 # get the current count of documents from the given collection.
 # this requests from cosmos and is subject to throughtput constraints as well.
@@ -20,15 +21,21 @@ def uploadBatch(coll, batch):
     count = 0
     size = len(batch)
     before = getDocCount(coll)
+    duplicates = 0
     while count < size:
         try:
             # try to bulk insert the batch
             coll.insert_many(batch[count:])
             count += size
-        except:
+        except BulkWriteError as err:
+            code = err.details['writeErrors'][0]['code']
+            if (code == 11000): # duplicate key
+                duplicates = duplicates + 1
+            elif (code == 16500): # 429
+                time.sleep(0.01)
             # catch the 429 here and determine how many documents are left in the batch to insert
             # count how many were successfully inserted before retrying
-            count = getDocCount(coll) - before
+            count = getDocCount(coll) - before + duplicates
 
 # insert all documents from one db into another in batches.
 def migrate(fromConnStr, fromDbName, fromCollName, 
@@ -42,17 +49,15 @@ def migrate(fromConnStr, fromDbName, fromCollName,
     batch = []
     total = 0
     items = fromCollection.find({})
-    start = datetime.datetime.now()
     for item in items:
         # build the batch to upload
         batch.append(item)
         if (len(batch) == batchSize):
+            start = datetime.datetime.now()
             uploadBatch(toCollection, batch)
-            # print the docs/sec average after every batch
+            timeDiff = (datetime.datetime.now() - start).total_seconds()
             total += len(batch)
-            diff = (datetime.datetime.now() - start).total_seconds()
-            print(f"{round(total / diff, 2)} docs/sec, total: {total}")
-            # clear the batch to create a new batch
+            print(f"{round(len(batch) / timeDiff, 2)} docs/sec, total: {total}")
             batch.clear()
     
     # if there is a batch left over that hasn't been uploaded, upload it

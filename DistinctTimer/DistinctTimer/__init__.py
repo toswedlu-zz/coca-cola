@@ -50,7 +50,7 @@ def main(mytimer: func.TimerRequest) -> None:
     client = MongoClient(os.environ["CosmosConnStr"])
     database = client[os.environ["CosmosDbName"]]
 
-    newSince = datetime.datetime.now()
+    newSince = datetime.datetime.utcnow()
     since = getSince(database, sinceCollName)
     result = getChanges(monitoredCollName, database, since)
     while (hasChanges(result)):

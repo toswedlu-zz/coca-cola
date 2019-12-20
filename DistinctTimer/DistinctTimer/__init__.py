@@ -56,11 +56,11 @@ def main(mytimer: func.TimerRequest) -> None:
     while (hasChanges(result)):
         result = getMoreChanges(monitoredCollName, database, result)
         for change in result['cursor']['nextBatch']:
-            logging.info(change)
             ts = change['fullDocument']['ts']
-            logging.info(f"ts: {ts}")
+            aggregation = change['fullDocument']['aggregation']
+            doc = { "_id": f"{aggregation}|{ts}", "aggregation": aggregation, "ts": ts}
             try:
-                database[viewCollName].insert_one({"_id": ts})
+                database[viewCollName].insert_one(doc)
             except DuplicateKeyError:
                 # Ignore duplicate key errors.
                 pass

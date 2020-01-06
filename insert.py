@@ -69,7 +69,11 @@ def migrate(fromConnStr, fromDbName, fromCollName,
 # *** Hey guys! put your connection information here! ***
 # *** This is just my own test db connection information and should be replaced! ***
 # start the copy from one database to another
-connStr = "mongodb://tom-mongo-test:F0pbGxwzUdV8nUWukkfBEN8J2xO28BjXTF94HegaV0S4a0yRNfJ68GRJXdn0c6kiDbbXEeLeIOzKVTrKZj5esg==@tom-mongo-test.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@tom-mongo-test@&retrywrites=false"
-migrate(connStr, "tom_test", "People",
-        connStr, "tom_test", "People_copy",
+#fromConnStr = ""
+toConnStr = ""
+fromConnStr = toConnStr
+toConnStr = "127.0.0.1:27017"
+
+migrate(fromConnStr, "EnrichmentDocs", "NetbaseSummary_test",
+        toConnStr, "coke-test", "NetbaseSummary_test",
         500)

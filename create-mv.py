@@ -17,7 +17,7 @@ def insertDocs(connStr: str, dbName: str, fromCollName: str, toCollName: str) ->
     docs = createDocList(fromColl)
     toColl.insert_many(docs)
 
-connStr = "mongodb://cos-tccc-ebt-dev:agbi8w1dIVykarU9z8Kf0bwGEMnyS4LW9iWRA7gYsJoLjQpUGjQUNkZsWhehjQ1CSLoapF0xgXK5p8NUAlpN6g==@cos-tccc-ebt-dev.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cos-tccc-ebt-dev@&retrywrites=false"
+connStr = ""
 dbName = "EnrichmentDocs"
 fromCollName = "NetbaseSummary"
 toCollName = "NetbaseSummary_mv"

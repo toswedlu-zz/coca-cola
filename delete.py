@@ -44,5 +44,5 @@ def delete(connStr, dbName, collName, filter):
 # *** Hey guys! put your connection information here! ***
 # *** This is just my own test db connection information and should be replaced! ***
 # start the deletion of documents based on query
-connStr = "mongodb://tom-mongo-test:F0pbGxwzUdV8nUWukkfBEN8J2xO28BjXTF94HegaV0S4a0yRNfJ68GRJXdn0c6kiDbbXEeLeIOzKVTrKZj5esg==@tom-mongo-test.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@tom-mongo-test@&retrywrites=false"
+connStr = ""
 delete(connStr, "tom_test", "People_copy", {"Gender":0})
